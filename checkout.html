@@ -1,0 +1,27 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<h2>Checkout</h2>
+
+{% if cart_items %}
+    <ul>
+    {% for item in cart_items %}
+        <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - ${{ item.total_price }}</li>
+    {% endfor %}
+    </ul>
+    <p><strong>Total:</strong> ${{ total }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <label><strong>Select Payment Method:</strong></label><br>
+        <input type="radio" name="payment_method" value="Cash on Delivery" required> Cash on Delivery<br>
+        <input type="radio" name="payment_method" value="Credit Card"> Credit Card<br>
+        <input type="radio" name="payment_method" value="Bank Transfer"> Bank Transfer<br><br>
+
+        <button type="submit" class="btn btn-success">Pay Now</button>
+    </form>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,66 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+
+<div class="container">
+  <h2 class="mb-4">Welcome to E-Shop!</h2>
+
+  {% if not user.is_authenticated %}
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <h4>Register</h4>
+        <form method="post" action="{% url 'register' %}">
+          {% csrf_token %}
+          {{ register_form.as_p }}
+          <button type="submit" class="btn btn-success">Register</button>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <h4>Login</h4>
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          {{ login_form.as_p }}
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <p>Hello, {{ user.username }}! <a href="{% url 'dashboard' %}">Go to Dashboard</a></p>
+  {% endif %}
+
+  <hr>
+
+  <h3>Products</h3>
+  <div class="row">
+    {% for product in products %}
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p>${{ product.price }}</p>
+            <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-primary btn-sm">View</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if user.is_authenticated %}
+    <hr>
+    <h3>Your Cart</h3>
+    {% if orders %}
+      <ul>
+        {% for order in orders %}
+          <li>{{ order.product.name }} ({{ order.quantity }})</li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'cart' %}" class="btn btn-warning">Go to Cart</a>
+    {% else %}
+      <p>Your cart is empty.</p>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% endblock %}
